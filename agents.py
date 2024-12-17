@@ -1,11 +1,17 @@
 from crewai import Agent
 from textwrap import dedent
+from crewai.llm import LLM
 from langchain.llms import Ollama
 from tools import CustomTools  # Import tools
 
 class CustomAgents:
     def __init__(self):
-        self.Ollama = Ollama(model="qwen2.5:7b")
+        # self.Ollama = Ollama(model="qwen2.5:7b")
+
+        self.Ollama = LLM(
+            model="ollama/qwen2.5:7b",  # Explicitly tell litellm you are using ollama
+            base_url="http://localhost:11434",  # Ollama's local API base URL
+        )
         self.tools = CustomTools()  # Initialize custom tools
 
     def harmonizer_agent(self):
