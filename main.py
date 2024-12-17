@@ -19,13 +19,13 @@ def run_chord_progression(sequence_1, sequence_2):
     reviewer = agents.reviewer_agent()
 
     # Define tasks
-    harmonize_task = tasks.harmonize_task(harmonizer, sequence_1, sequence_2)
+    generateChords = tasks.generateChords(harmonizer, sequence_1, sequence_2)
     review_task = tasks.review_task(reviewer)
 
     # Initialize and execute the crew
     crew = Crew(
         agents=[harmonizer, reviewer],
-        tasks=[harmonize_task, review_task],
+        tasks=[generateChords, review_task],
         verbose=True,
     )
     result = crew.kickoff()
@@ -46,13 +46,13 @@ def run_chord_progression_32(sequence):
     reviewer = agents.reviewer_agent()
 
     # Define tasks
-    harmonize_task = tasks.generate32_task(harmonizer, sequence)
+    generateBSection = tasks.generateBSection(harmonizer, sequence)
     review_task = tasks.review_task(reviewer)
 
     # Initialize and execute the crew
     crew = Crew(
         agents=[harmonizer, reviewer],
-        tasks=[harmonize_task, review_task],
+        tasks=[generateBSection, review_task],
         verbose=True,
     )
     result = crew.kickoff()
