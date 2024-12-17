@@ -55,3 +55,15 @@ class CustomTasks:
             agent=agent,
             output_json=BSection,
         )
+    def review_b_task(self, agent):
+        return Task(
+            description=dedent(
+                """
+                Use the RAG search tool to validate the generated chord progression.
+                Provide concise tips on how to improve the progression based on harmony principles.
+                """
+            ),
+            expected_output="8 chords in the expected json format",
+            agent=agent,
+            output_json=BSection,
+        )
