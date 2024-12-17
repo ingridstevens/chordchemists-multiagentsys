@@ -23,13 +23,14 @@ class CustomTasks:
             agent=agent,
         )
     
+    # We provide an A section, but we want a B section which contrasts the previous chords (A section)
+
     def generate32_task(self, agent, sequence):
         return Task(
             description=dedent(
                 f"""
-                Use the RAG search tool to reference harmony principles and chord progressions 
-                in the text file to propose a new progression that mixes the following:
-                Sequence 1: {sequence}
+                Use the RAG search tool to produce a "B" section based on the sequence provided ("A" Section).
+                This is the A Section: {sequence}
                 """
             ),
             expected_output="A valid chord progression based on harmony principles.",
@@ -48,14 +49,3 @@ class CustomTasks:
             agent=agent,
             output_json=Chord,
         )
-
-    # def format_task(self, agent):
-    #     return Task(
-    #         description=dedent(
-    #             """
-    #             Format the final chord progression into the exact required JSON format:
-    #             """
-    #         ),
-    #         expected_output='"proposed_progression": ["", "", "", ""]',
-    #         agent=agent,
-    #     )
