@@ -60,6 +60,11 @@ if __name__ == "__main__":
         outputs=gr.Textbox(label="Generated Chord Progression"),
         title="Chord Progression Generator",
         description="Input two chord sequences and let AI harmonize, review, and format the final progression.",
+        examples=[
+            ["C G Am F", "D7 G Em C"],
+            ["Em F Fm", "G7 Am C D7"],
+            ["Dm7 G7 Cmaj7", "Am7 Dm7 G7"],
+        ],
     )
 
     demo.launch()
