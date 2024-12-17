@@ -44,14 +44,16 @@ def run_chord_progression_32(sequence):
     # Create agents
     harmonizer = agents.harmonizer_agent()
     reviewer = agents.reviewer_agent()
+    harmonyBSection = agents.harmonyBSection()
+    reviewBSection = agents.reviewBSection()
 
     # Define tasks
-    generateBSection = tasks.generateBSection(harmonizer, sequence)
+    generateBSection = tasks.generateBSection(harmonyBSection, sequence)
     review_task = tasks.review_task(reviewer)
 
     # Initialize and execute the crew
     crew = Crew(
-        agents=[harmonizer, reviewer],
+        agents=[harmonyBSection, reviewBSection],
         tasks=[generateBSection, review_task],
         verbose=True,
     )
