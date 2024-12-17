@@ -2,14 +2,19 @@ import json
 from crewai import Task
 from textwrap import dedent
 
-from pydantic import BaseModel
+from pydantic import BaseModel, conlist
 from typing import List
 
 # Define pydantic chord model
 class Chord(BaseModel):
     chord: List[str]
+
+# Define pydantic model for B section 
+
+class BSection(BaseModel):
+    bsection: conlist(str, min_length=8, max_length=9)  # Updated for Pydantic v2
 class CustomTasks:
-    def harmonize_task(self, agent, sequence_1, sequence_2):
+    def generateChords(self, agent, sequence_1, sequence_2):
         return Task(
             description=dedent(
                 f"""
@@ -25,15 +30,16 @@ class CustomTasks:
     
     # We provide an A section, but we want a B section which contrasts the previous chords (A section)
 
-    def generate32_task(self, agent, sequence):
+    def generateBSection(self, agent, sequence):
         return Task(
             description=dedent(
                 f"""
                 Use the RAG search tool to produce a "B" section based on the sequence provided ("A" Section).
+                The B section should contrast the A section. This is very important!
                 This is the A Section: {sequence}
                 """
             ),
-            expected_output="A valid chord progression based on harmony principles.",
+            expected_output="A valid chord progression that contrasts expertly with the provided A Section.",
             agent=agent,
         )
 
@@ -47,5 +53,5 @@ class CustomTasks:
             ),
             expected_output="Suggestions for improving the chord progression.",
             agent=agent,
-            output_json=Chord,
+            output_json=BSection,
         )
