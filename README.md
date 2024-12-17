@@ -1,29 +1,102 @@
-## agents.py
-This file contains the definition of custom agents.
-To create a Agent, you need to define the following:
-1. Role: The role of the agent.
-2. Backstory: The backstory of the agent.
-3. Goal: The goal of the agent.
-4. Tools: The tools that the agent has access to (optional).
-5. Allow Delegation: Whether the agent can delegate tasks to other agents(optional).
+# **Chord Progression Generator - CrewAI Project**
 
-    [More Details about Agent](https://docs.crewai.com/concepts/agents).
+This project uses **CrewAI** to generate, review, and format chord progressions. The workflow involves multiple AI agents collaborating to create harmonic and musically interesting progressions. A **TXT RAG Search Tool** is integrated to provide relevant data from a chord library text file.
 
-## task.py
-This file contains the definition of custom tasks.
-To Create a task, you need to define the following :
-1. description: A string that describes the task.
-2. agent: An agent object that will be assigned to the task.
-3. expected_output: The expected output of the task.
+---
 
-    [More Details about Task](https://docs.crewai.com/concepts/tasks).
+## **Project Structure**
 
-## crew (main.py)
-This is the main file that you will use to run your custom crew.
-To create a Crew , you need to define Agent ,Task and following Parameters:
-1. Agent: List of agents that you want to include in the crew.
-2. Task: List of tasks that you want to include in the crew.
-3. verbose: If True, print the output of each task.(default is False).
-4. debug: If True, print the debug logs.(default is False).
+### 1. `agents.py`
+Defines custom agents that perform specific roles in the workflow:
 
-    [More Details about Crew](https://docs.crewai.com/concepts/crew).
+- **Harmonizer Agent**: Proposes a chord progression by mixing two input sequences.
+- **Reviewer Agent**: Reviews the progression and provides tips for improvement.
+- **Formatter Agent**: Ensures the final progression is formatted correctly as JSON.
+
+Each agent includes:
+- **Role**: The agent's role.
+- **Backstory**: Agent context and expertise.
+- **Goal**: The objective for the agent.
+- **Tools**: Optional tools for task execution (e.g., TXT RAG Search Tool).
+
+[More Details about Agents](https://docs.crewai.com/concepts/agents)
+
+---
+
+### 2. `tasks.py`
+Defines tasks assigned to agents. Each task specifies:
+1. **Description**: A clear explanation of what needs to be done.
+2. **Agent**: The agent assigned to perform the task.
+3. **Expected Output**: The result expected from the agent.
+
+Tasks:
+- **Harmonize Task**: Mix two chord sequences into a new progression.
+- **Review Task**: Validate and refine the chord progression.
+- **Format Task**: Ensure the output matches the required JSON format.
+
+[More Details about Tasks](https://docs.crewai.com/concepts/tasks)
+
+---
+
+### 3. `tools.py`
+Contains the **TXT RAG Search Tool**, which allows agents to search for chord progression knowledge from a local text file.
+
+- **TXTSearchTool**: A custom tool that:
+  - Reads content from `data/chords_data.txt`.
+  - Performs semantic searches to find relevant information.
+  
+Example usage:
+```python
+from tools import TXTSearchTool
+
+tool = TXTSearchTool(txt_file="data/chords_data.txt")
+results = tool.search("Em F Fm")  # Searches for relevant chord data
+
+
+### 4. `main.py`
+The main orchestrator file where:
+1. Agents are instantiated and tasks are assigned.
+2. A **Crew** is created with a list of agents and tasks.
+3. The workflow is executed sequentially.
+
+Key parameters:
+- **Agents**: List of agents.
+- **Tasks**: List of tasks.
+- **Verbose**: Prints task execution details.
+- **Debug**: Enables detailed logs.
+
+**How it Works**:
+1. Input two chord sequences.
+2. Agents collaborate:
+   - Harmonizer → Generate progression.
+   - Reviewer → Validate and improve.
+   - Formatter → Ensure proper JSON format.
+3. Output:
+   
+    "proposed_progression": ["Cmaj7", "Dm7", "G7", "Cmaj7"]
+    
+    ## **Setup Instructions**
+
+### Step 1: Clone the Repository
+
+    git clone https://github.com/ingridstevens/chordchemists-multiagentsys
+    cd your-repo-name
+
+## Step 2: Create a Virtual Environment
+
+    python -m venv env_crewai
+    source env_crewai/bin/activate
+
+## Step 3: Install the Required Libraries
+
+    pip install -r requirements.txt 
+
+
+## Run the Project
+
+    python main.py
+
+## Example inputs 
+
+    Enter Chord Sequence 1: Em F Fm
+    Enter Chord Sequence 2: G7 Am C D7

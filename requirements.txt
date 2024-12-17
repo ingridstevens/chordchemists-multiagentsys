@@ -1,0 +1,6 @@
+crewai[tools]  # CrewAI with tools (ensure you have the correct version)
+langchain      # Core LangChain library
+openai         # OpenAI API for embeddings and LLM usage
+faiss-cpu      # FAISS for vector similarity search (CPU version)
+python-decouple # To securely load environment variables
+tiktoken       # Tokenizer for OpenAI models

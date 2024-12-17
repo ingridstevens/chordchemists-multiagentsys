@@ -1,0 +1,33 @@
+Given a major scale (ex C D E F G A B C) the chords can be any one of these: Cmaj7 Dm7 Em7 Fmaj7 G7 A-7 B-7b5
+
+In a minor scale (ex C D Eb F G Ab Bb C) the chords can be any one of these: Cm7 Dm7b5 Ebmaj7 F-7 G-7 (or G7b9) Abmaj7 Bb7 (or Bdim7)
+
+## Secondary dominants
+
+The possible secondary dominants (secondary dominants always occur before the chord they are the secondary dominant of) in a major scale are:
+D7 (or D9 or D13) is the secondary dominant of G
+C7 (or C9 or C13) is the secondary dominant of F
+E7 (or E(b9) or E(b13)) is the secondary dominant of Am
+A7 (or A9 or A(b13)) is the secondary dominant of Dm
+B7 (or B(b9) or B(b13)) is the secondary dominant of Em
+
+to get the secondary dominant of any chord just go up the scale by 4 notes more and make it a 7 chord (ex. G -> A -> B -> C -> D7 )
+
+The possible secondary dominants (secondary dominants always occur before the chord they are the secondary dominant of) in a minor scale are:
+C7 (or C9 or C(b13)) is the secondary dominant of F 
+D7 (or C(b9) or C(b13)) is the secondary dominant of G 
+Eb7 (or Eb9 or Eb13) is the secondary dominant of Ab
+Bb7 (or Bb9 or Bb(b13)) is the secondary dominant of Eb
+
+A7 is often resolved in D7 and then in G7 like so: A7 D7 G7
+
+## Tritone substitution
+
+In a major mode
+Whenever you find G7 you can substitute it by Db7 (this is a tritone substitution) and resolve it to Cmaj7: Db7 C
+Whenever you find D7 you can substitute it by Eb7 (this is a tritone substitution) and resolve it to Dm7: Eb7 Dm7
+Whenever you find B7 you can substitute it by F7 (this is a tritone substitution) and resolve it to Em7: F7 Em7
+Whenever you find C7 you can substitute it by Gb7 (this is a tritone substitution) and resolve it to Fmaj7
+Whenever you find D7 you can substitute it by Ab7 (this is a tritone substitution) and resolve it to G7
+Whenever you find E7 you can substitute it by Bb7 (this is a tritone substitution) and resolve it to Am7
+
