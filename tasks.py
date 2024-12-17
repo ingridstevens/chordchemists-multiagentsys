@@ -22,6 +22,19 @@ class CustomTasks:
             expected_output="A valid chord progression based on harmony principles.",
             agent=agent,
         )
+    
+    def generate32_task(self, agent, sequence):
+        return Task(
+            description=dedent(
+                f"""
+                Use the RAG search tool to reference harmony principles and chord progressions 
+                in the text file to propose a new progression that mixes the following:
+                Sequence 1: {sequence}
+                """
+            ),
+            expected_output="A valid chord progression based on harmony principles.",
+            agent=agent,
+        )
 
     def review_task(self, agent):
         return Task(
