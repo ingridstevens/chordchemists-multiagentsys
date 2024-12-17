@@ -101,8 +101,8 @@ chordMixer = gr.Interface(
         gr.Textbox(label="Chord Sequence 1", placeholder="Enter first chord sequence, e.g., Em F Fm"),
         gr.Textbox(label="Chord Sequence 2", placeholder="Enter second chord sequence, e.g., G7 Am C D7")
     ],
-    outputs=gr.Textbox(label="Generated Chord Progression"),
-    title="Chord Progression Generator - Tab 1",
+    outputs=gr.Textbox(label="Generated Chords"),
+    title="Chords Generator",
     description="Input two chord sequences and let AI harmonize, review, and format the final progression.",
     examples=[
         ["C G Am F", "D7 G Em C"],
@@ -117,7 +117,7 @@ chord32gen = gr.Interface(
         gr.Textbox(label="Chord Sequence", placeholder="Enter a chord sequence composed of 8 chords, e.g., G7 Am C D7 G7 Am C D7")
     ],
     outputs=gr.Textbox(label="Generated Chord Progression"),
-    title="Chord Progression Generator - Tab 2",
+    title="B Section Generator",
     description="Input two chord sequences and let AI harmonize, review, and format the final progression.",
     examples=[
         ["C G Am F D7 G Em C"],
@@ -127,5 +127,5 @@ chord32gen = gr.Interface(
 
 # Combine Tabs into a Tabbed Interface
 if __name__ == "__main__":
-    demo = gr.TabbedInterface([chordMixer, chord32gen], ["Chord Sequence Mixer", "Chord 32 Gen"])
+    demo = gr.TabbedInterface([chordMixer, chord32gen], ["Chords Generator", "B Section Generator"])
     demo.launch()
