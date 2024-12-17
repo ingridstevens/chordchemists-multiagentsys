@@ -33,9 +33,8 @@ class CustomTasks:
             description=dedent(
                 """
                 Format the final chord progression into the exact required JSON format:
-                "proposed_progression": ["Cmaj7", "Dm7", "G7", "Cmaj7"]
                 """
             ),
-            expected_output='"proposed_progression": ["Cmaj7", "Dm7", "G7", "Cmaj7"]',
+            expected_output='"proposed_progression": ["", "", "", ""]',
             agent=agent,
         )

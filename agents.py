@@ -55,7 +55,7 @@ class CustomAgents:
             """),
             goal=dedent("""
                 Ensure the final chord progression is formatted correctly as:
-                "proposed_progression": ["Cmaj7", "Dm7", "G7", "Cmaj7"]
+                "proposed_progression": ["x", "x", "x", "x"]
             """),
             tools=[],  # Formatter does not need tools
             allow_delegation=False,
