@@ -8,6 +8,7 @@ from typing import List
 # Define pydantic chord model
 class Chord(BaseModel):
     chord: List[str]
+    suggestions: str
 
 # Define pydantic model for B section 
 
