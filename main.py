@@ -22,12 +22,12 @@ def run_chord_progression(sequence_1, sequence_2):
     # Define tasks
     harmonize_task = tasks.harmonize_task(harmonizer, sequence_1, sequence_2)
     review_task = tasks.review_task(reviewer)
-    format_task = tasks.format_task(formatter)
+    # format_task = tasks.format_task(formatter)
 
     # Initialize and execute the crew
     crew = Crew(
         agents=[harmonizer, reviewer, formatter],
-        tasks=[harmonize_task, review_task, format_task],
+        tasks=[harmonize_task, review_task],
         verbose=True,
     )
     result = crew.kickoff()
