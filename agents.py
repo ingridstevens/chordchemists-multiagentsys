@@ -2,14 +2,15 @@ from crewai import Agent
 from textwrap import dedent
 from crewai.llm import LLM
 from langchain.llms import Ollama
+import os
 from tools import CustomTools  # Import tools
 
 class CustomAgents:
     def __init__(self):
-        # self.Ollama = Ollama(model="qwen2.5:7b")
 
+        model_name = os.getenv('MODEL', 'ollama/qwen2.5:7b')  # Get model name from environment variable or use default
         self.Ollama = LLM(
-            model="ollama/qwen2.5:3b",  # Explicitly tell litellm you are using ollama
+            model=model_name,  # Use the model name from the environment variable
             base_url="http://localhost:11434",  # Ollama's local API base URL
         )
         self.tools = CustomTools()  # Initialize custom tools
