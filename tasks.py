@@ -52,9 +52,9 @@ class CustomTasks:
                 Provide concise tips on how to improve the progression based on harmony principles.
                 """
             ),
-            expected_output="Suggestions for improving the chord progression.",
+            expected_output="chords in the expected json format",
             agent=agent,
-            output_json=BSection,
+            output_json=Chord,
         )
     def review_b_task(self, agent):
         return Task(
