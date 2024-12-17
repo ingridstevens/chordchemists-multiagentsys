@@ -1,6 +1,13 @@
+import json
 from crewai import Task
 from textwrap import dedent
 
+from pydantic import BaseModel
+from typing import List
+
+# Define pydantic chord model
+class Chord(BaseModel):
+    chord: List[str]
 class CustomTasks:
     def harmonize_task(self, agent, sequence_1, sequence_2):
         return Task(
@@ -26,15 +33,16 @@ class CustomTasks:
             ),
             expected_output="Suggestions for improving the chord progression.",
             agent=agent,
+            output_json=Chord,
         )
 
-    def format_task(self, agent):
-        return Task(
-            description=dedent(
-                """
-                Format the final chord progression into the exact required JSON format:
-                """
-            ),
-            expected_output='"proposed_progression": ["", "", "", ""]',
-            agent=agent,
-        )
+    # def format_task(self, agent):
+    #     return Task(
+    #         description=dedent(
+    #             """
+    #             Format the final chord progression into the exact required JSON format:
+    #             """
+    #         ),
+    #         expected_output='"proposed_progression": ["", "", "", ""]',
+    #         agent=agent,
+    #     )
