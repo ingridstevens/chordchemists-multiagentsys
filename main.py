@@ -7,6 +7,8 @@ import gradio as gr  # Import Gradio
 
 # Load environment variables
 os.environ["OPENAI_API_KEY"] = config("OPENAI_API_KEY")
+os.environ["GROQ_API_KEY"] = config("GROQ_API_KEY")
+
 
 # Function to run the CrewAI workflow
 def run_chord_progression(sequence_1, sequence_2):
@@ -24,8 +26,8 @@ def run_chord_progression(sequence_1, sequence_2):
 
     # Initialize and execute the crew
     crew = Crew(
-        agents=[harmonizer, reviewer],
-        tasks=[generateChords, review_task],
+        agents=[harmonizer],
+        tasks=[generateChords],
         verbose=True,
     )
     result = crew.kickoff()
@@ -49,12 +51,12 @@ def run_chord_progression_32(sequence):
 
     # Define tasks
     generateBSection = tasks.generateBSection(harmonyBSection, sequence)
-    review_task = tasks.review_task(reviewer)
+    review_b_task = tasks.review_b_task(reviewer)
 
     # Initialize and execute the crew
     crew = Crew(
-        agents=[harmonyBSection, reviewBSection],
-        tasks=[generateBSection, review_task],
+        agents=[harmonyBSection],#, reviewBSection],
+        tasks=[generateBSection],#, review_b_task],
         verbose=True,
     )
     result = crew.kickoff()
@@ -91,9 +93,6 @@ def gradio_chord_progression_32(seq1):
     except Exception as e:
         return f"Error: {str(e)}"
 
-
-
-
 # Gradio Interfaces for Tabs
 chordMixer = gr.Interface(
     fn=gradio_chord_progression,
@@ -118,10 +117,11 @@ chord32gen = gr.Interface(
     ],
     outputs=gr.Textbox(label="Generated Chord Progression"),
     title="B Section Generator",
-    description="Input two chord sequences and let AI harmonize, review, and format the final progression.",
+    description="Input a length 8 chord sequence as A and let AI generate the B Section.",
     examples=[
         ["C G Am F D7 G Em C"],
         ["Em F Fm G7 Am C D7 Em"],
+        ["Am7-D7-Gmaj7-Cma7-F#m7b5-B7-Em7-Em7"]
     ],
 )
 

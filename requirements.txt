@@ -5,3 +5,5 @@ faiss-cpu
 python-decouple 
 tiktoken       
 gradio
+langchain_groq
+groq

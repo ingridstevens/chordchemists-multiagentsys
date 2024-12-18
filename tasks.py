@@ -7,13 +7,13 @@ from typing import List
 
 # Define pydantic chord model
 class Chord(BaseModel):
-    chord: List[str]
+    chord: conlist(str, min_length=8, max_length=9)
     suggestions: str
 
 # Define pydantic model for B section 
-
 class BSection(BaseModel):
-    bsection: conlist(str, min_length=8, max_length=9)  # Updated for Pydantic v2
+    bsection: conlist(str, min_length=8, max_length=9) 
+
 class CustomTasks:
     def generateChords(self, agent, sequence_1, sequence_2):
         return Task(
@@ -42,6 +42,8 @@ class CustomTasks:
             ),
             expected_output="A valid chord progression that contrasts expertly with the provided A Section.",
             agent=agent,
+            output_json=BSection,
+
         )
 
     def review_task(self, agent):
@@ -60,11 +62,13 @@ class CustomTasks:
         return Task(
             description=dedent(
                 """
-                Use the RAG search tool to validate the generated chord progression.
-                Provide concise tips on how to improve the progression based on harmony principles.
+                You are an expert in chord theory, you will 
+                replace any chord from the chord sequence provided 
+                in order to enrich the harmony, dont add new chords 
+                to the sequence and always give 8 chord sequences in the specified json format as a response
                 """
             ),
-            expected_output="8 chords in the expected json format",
+            expected_output="8 chords in json format = chords{['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x']}",
             agent=agent,
             output_json=BSection,
         )

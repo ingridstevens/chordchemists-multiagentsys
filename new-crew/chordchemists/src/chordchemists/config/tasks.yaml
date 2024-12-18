@@ -1,0 +1,23 @@
+generate_b_section:
+  description: >
+    Generate a compelling B-section for the provided A-section chords: {starting_chords}.
+    Ensure the B-section contrasts with the A-section harmonically while maintaining coherence.
+    Apply techniques such as modulation, tonicization, secondary dominants, faster harmonic motion, and chromaticism to create a unique and interesting progression.
+    The output should include chains of II-V progressions or other harmonic transitions that eventually resolve back to the original key.
+  expected_output: >
+    A JSON array with exactly 8 chords for the B-section, written in the same notation style as the provided A-section: {starting_chords}.
+    Ensure the chords are harmonically rich and provide the necessary contrast to the A-section.
+  agent: chord_generator
+
+review_b_section:
+  description: >
+    Review the generated B-section for the provided A-section: {starting_chords}.
+    Evaluate whether the B-section meets the following criteria:
+    - Provides harmonic contrast to the A-section through modulation, tonicization, or secondary dominants.
+    - Uses faster harmonic motion, chromatic passing chords, or tritone substitutions to enhance richness.
+    - Maintains coherence with the A-section and resolves back effectively to the original key.
+    Suggest improvements or replace any chords that could enhance the harmonic progression while maintaining the required 8-chord structure.
+  expected_output: >
+    A JSON array of 8 chords with improvements or suggestions applied, formatted in the same notation style as the provided A-section: {starting_chords}.
+    Include a brief critique or reasoning for any changes made.
+  agent: chord_reviewer
