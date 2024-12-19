@@ -12,7 +12,7 @@ class Chord(BaseModel):
 
 # Define pydantic model for B section 
 class BSection(BaseModel):
-    bsection: conlist(str, min_length=8, max_length=9) 
+    bsection: str
 
 class CustomTasks:
     def generateChords(self, agent, sequence_1, sequence_2):
@@ -62,13 +62,13 @@ class CustomTasks:
         return Task(
             description=dedent(
                 """
-                You are an expert in chord theory, you will 
-                replace any chord from the chord sequence provided 
-                in order to enrich the harmony, dont add new chords 
-                to the sequence and always give 8 chord sequences in the specified json format as a response
+                You are an expert formatter. you will always provide a formatted
+                list of chords: X, Y, Zm, Zmaj, X, Y, Zm, Zmaj
+                
+                Do not return anything else aside from this list.
                 """
             ),
-            expected_output="8 chords in json format = chords{['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x']}",
+            expected_output="comma separated chord list like  X, Y, Zm, Zmaj, X, Y, Zm, Zmaj",
             agent=agent,
             output_json=BSection,
         )

@@ -82,7 +82,6 @@ class CustomAgents:
         return Agent(
             role="Chord Harmonizer",
             backstory=dedent("""
-
                 B section rules:
                 Generally, the B section (often called the “bridge”) is designed to create contrast and lead the listener away from the home tonal center established in the A sections, eventually guiding back to it. Here are some common approaches and “rules of thumb”:
                 Change of Tonal Center:
@@ -103,12 +102,14 @@ class CustomAgents:
                 Some bridges might shift to the parallel minor or borrow chords from modal mixtures to create color contrasts. For example, if A is in a major key, the B section might incorporate borrowed chords from the parallel minor to darken the sound before returning.
                 In summary: The B section typically contrasts harmonically with the A section by employing new key centers, more chromaticism, different harmonic rhythms, and a series of transitional chords (often II-V patterns) that eventually lead the listener back home. This contrast is a central aesthetic feature of AABA form and is what makes the B section feel like a true “bridge.”
              
+
+
             """),
             goal=dedent("""
-                The user will send you 8 chords that will be the A section of 
-                a piece and you will come up with 8 new chords (B section) that
-                are contrasting the 8 chords from the beginning.
-                AND: you must end the B-section with a dominant chord that will resolve to the first chord of the A-section
+                You are provided with the A-section.
+                Find the first chord of the A-section.
+                You must create a B-section containing exactly 8 chords.
+                You must end the B-section with a dominant chord that MUST resolve to the FIRST chord of the A-section
                 
             """),
             tools=[self.tools.txt_search_instance()],  
@@ -120,16 +121,13 @@ class CustomAgents:
 
     def reviewBSection(self):
         return Agent(
-            role="Chord Reviewer",
+            role="Chord Formatter",
             backstory=dedent("""
-                You review chord progressions for harmonic quality.
-                Use the search tool to validate the harmony.
+                You format the chord into a comma-separated list.              
+                Like this: X, Y, Zm, Zmaj (use m = minor, maj = major)
             """),
             goal=dedent("""
-                Replace any chord from the sequence with another chord 
-                that provides harmonic richness but keeps the progression 
-                contrasting with the A section. Always provide a 8 chord long 
-                sequence in the specified json format,
+                Provde a chord progression of length 8 chords, in the format: X, Y, Zm, Zmaj
             """),
             tools=[self.tools.txt_search_instance()],  # Reviewer can also use TXTSearchTool
             allow_delegation=False,

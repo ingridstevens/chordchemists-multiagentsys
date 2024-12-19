@@ -55,8 +55,8 @@ def run_chord_progression_32(sequence):
 
     # Initialize and execute the crew
     crew = Crew(
-        agents=[harmonyBSection],#, reviewBSection],
-        tasks=[generateBSection],#, review_b_task],
+        agents=[harmonyBSection, reviewBSection],
+        tasks=[generateBSection, review_b_task],
         verbose=True,
     )
     result = crew.kickoff()
@@ -74,7 +74,7 @@ def gradio_chord_progression(seq1, seq2):
     """
     try:
         result = run_chord_progression(seq1, seq2)
-        return f"Generated Progression:\n\n{result}"
+        return f"{result}"
     except Exception as e:
         return f"Error: {str(e)}"
 
@@ -89,7 +89,7 @@ def gradio_chord_progression_32(seq1):
     """
     try:
         result = run_chord_progression_32(seq1)
-        return f"Generated Progression:\n\n{result}"
+        return f"{result}"
     except Exception as e:
         return f"Error: {str(e)}"
 
@@ -127,5 +127,5 @@ chord32gen = gr.Interface(
 
 # Combine Tabs into a Tabbed Interface
 if __name__ == "__main__":
-    demo = gr.TabbedInterface([chordMixer, chord32gen], ["Chords Generator", "B Section Generator"])
+    demo = gr.TabbedInterface([chord32gen, chordMixer], ["B Section Generator", "Chords Generator"])
     demo.launch()
