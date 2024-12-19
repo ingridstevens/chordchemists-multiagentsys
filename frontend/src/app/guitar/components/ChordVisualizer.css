@@ -1,0 +1,49 @@
+.chord-visualizer-container {
+    display: grid;
+    grid-template-columns: repeat(24, 1fr);  /* 24 equal columns */
+    gap: 10px;  /* Optional: adds space between grid items */
+    width: 100%;
+  }
+  
+  .chord-visualizer {
+    position: relative;
+    display: inline-block;
+    padding: 10px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  .chord-visualizer.hover {
+    border: 2px solid rgba(255, 255, 255, 0.5);  /* Hover effect */
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+  }
+  
+  .chord-visualizer.selected {
+    border-color: #FFD700;  /* Selected state color */
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);  /* Selected halo effect */
+  }
+  
+  .chord-name {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 5px;
+    color: rgb(0, 0, 0);
+  }
+  .chord-name {
+    font-size: 36px; /* Increase font size */
+    cursor: pointer;
+    margin: 10px 0; /* Add some space between nodes */
+    padding: 15px; /* Add padding inside the node */
+    background-color: #ffffff; /* Add a background color for better visibility */
+    border-radius: 8px; /* Optional: add rounded corners */
+    text-align: center; /* Center the text */
+  }
+  
+  .chord-name:hover {
+    color: #002fff; /* Change text color on hover */
+  }
+  
+
+  

@@ -6,11 +6,22 @@ from tasks import CustomTasks
 import gradio as gr  # Import Gradio
 
 
+
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+
 from pydantic import BaseModel
 import uvicorn
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Allow only this origin
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
 
 class BSectionRequest(BaseModel):
     sequence: str
@@ -49,17 +60,20 @@ def run_chord_progression(sequence_1, sequence_2):
 
 # Function to run the CrewAI workflow
 def run_chord_progression_32(sequence):
+    print("init chord prog")
     # Initialize agents and tasks
     agents = CustomAgents()
     tasks = CustomTasks()
 
     # Create agents
+    print("create agents")
     harmonizer = agents.harmonizer_agent()
     reviewer = agents.reviewer_agent()
     harmonyBSection = agents.harmonyBSection()
     reviewBSection = agents.reviewBSection()
 
     # Define tasks
+    print("def tasks")
     generateBSection = tasks.generateBSection(harmonyBSection, sequence)
     review_b_task = tasks.review_b_task(reviewer)
 
@@ -69,6 +83,7 @@ def run_chord_progression_32(sequence):
         tasks=[generateBSection, review_b_task],
         verbose=True,
     )
+    print("result:")
     result = crew.kickoff()
 
     # Return result as a string
@@ -135,15 +150,16 @@ chord32gen = gr.Interface(
     ],
 )
 
-@app.get("/generate-b-section")
+@app.post("/generate-b-section")
 def generate_b_section(sequence: str):
     try:
         result = run_chord_progression_32(sequence)
 
         # Access the B-section from the result directly
         bsection = result.bsection if hasattr(result, 'bsection') else "No B-section found"
-
-        return {result}
+        print(bsection)
+        result = result["bsection"]
+        return {str(result)}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating B section: {str(e)}")
