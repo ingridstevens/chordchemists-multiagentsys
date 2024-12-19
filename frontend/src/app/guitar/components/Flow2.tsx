@@ -1,4 +1,3 @@
-'use client';
 import { useCallback, useState, useEffect, useRef } from "react";
 import {
   Background,
@@ -19,32 +18,31 @@ import { initialEdges, edgeTypes, type CustomEdgeType } from "./edges2";
 import "@xyflow/react/dist/style.css";
 
 // Function to map chord symbols to MIDI notes
-const chordToNotes = (chord: string) => {
-  return chordMap[chord] || []; // Return an empty array if chord is not found
+const chordToNotes = (chord) => {
+  return chordMap[chord] || [];
 };
 
 export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [selectedNodes, setSelectedNodes] = useState<Node[]>([]);
-  const audioContextRef = useRef<AudioContext | null>(null);
+  const [selectedNodes, setSelectedNodes] = useState([]);
+  const audioContextRef = useRef(null);
   const [instrument, setInstrument] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false); // To prevent multiple rapid key presses
-  const [inputValue, setInputValue] = useState(''); // To store user input
-  const [fetchedChords, setFetchedChords] = useState<string[]>([]); // To store fetched chords
-  const nodeWidth = 150; // Width of each node
-  const nodeHeight = 100; // Height of each node
-  const maxColumns = 4; // Maximum number of nodes per row (can be adjusted based on your layout)
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const [fetchedChords, setFetchedChords] = useState([]);
+  const nodeWidth = 150;
+  const nodeHeight = 100;
+  const maxColumns = 4;
 
-  // Initialize the AudioContext and SoundFont instrument
+  // Initialize AudioContext and SoundFont instrument
   useEffect(() => {
     if (!audioContextRef.current) {
       audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
-      console.log('AudioContext initialized');
     }
 
     const loadInstrument = async () => {
-      const audioContext = audioContextRef.current!;
+      const audioContext = audioContextRef.current;
       const loadedInstrument = await Soundfont.instrument(audioContext, 'acoustic_grand_piano');
       setInstrument(loadedInstrument);
     };
@@ -52,97 +50,97 @@ export default function App() {
     if (audioContextRef.current && !instrument) {
       loadInstrument();
     }
-
-    return () => {
-      if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
-        console.log('AudioContext will not be closed here');
-      }
-    };
   }, [instrument]);
 
-  const onConnect: OnConnect = useCallback(
+  const onConnect = useCallback(
     (connection) => setEdges((edges) => addEdge(connection, edges)),
     [setEdges]
   );
 
-  const onSelectionChange = useCallback((elements: { nodes: Node[]; edges: Edge[] }) => {
+  const onSelectionChange = useCallback((elements) => {
     const sortedNodes = [...elements.nodes].sort((a, b) => a.position.x - b.position.x);
     setSelectedNodes(sortedNodes);
   }, []);
 
-  // Handle key press to trigger chord playback
+  // Handle key press for chord playback
   useEffect(() => {
-    const handleKeyPress = async (event: KeyboardEvent) => {
+    const handleKeyPress = async (event) => {
       if (event.key === 'Enter' && !isPlaying) {
-        setIsPlaying(true); // Prevent multiple rapid key presses
-        await playChords(selectedNodes, audioContextRef); // Play chords
-        setIsPlaying(false); // Reset after playback
+        setIsPlaying(true);
+        await playChords(selectedNodes, audioContextRef);
+        setIsPlaying(false);
       }
     };
 
     window.addEventListener('keydown', handleKeyPress);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyPress);
-    };
+    return () => window.removeEventListener('keydown', handleKeyPress);
   }, [selectedNodes, isPlaying]);
 
-  // Fetch chords from the API
+  // Updated fetchChords function to match the API endpoint
   const fetchChords = async () => {
-    const response = await fetch(`http://127.0.0.1:8000/generate-b-section?sequence=`);
-    const data = await response.json();
-    const fetchedChords = data.result.split(',').map((chord: string) => chord.trim());
-    setFetchedChords(fetchedChords);
-    console.log('Fetched Chords:', fetchedChords);
+    try {
+      const formData = new URLSearchParams();
+      formData.append('chord_sequence', inputValue);
 
-    // Automatically submit fetched chords
-    handleFetchedChords(fetchedChords);
+      const response = await fetch('http://127.0.0.1:8000/generate', {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch chords');
+      }
+
+      const data = await response.json();
+      // Parse the chord sequence from the specific API response format
+      const chordSequence = data["chord_sequence:"];
+      
+      if (chordSequence) {
+        const chords = chordSequence.split(',').map(chord => chord.trim());
+        setFetchedChords(chords);
+        handleFetchedChords(chords);
+      }
+    } catch (error) {
+      console.error('Error fetching chords:', error);
+    }
   };
 
-  // Handle fetched chords and update the nodes
-  const handleFetchedChords = (fetchedChords: string[]) => {
+  // Handle fetched chords and create nodes
+  const handleFetchedChords = (chords) => {
     const highestNodeId = Math.max(...nodes.map(node => parseInt(node.id, 10)), 0);
-    const newNodes = fetchedChords.map((chord, index) => {
-      const row = Math.floor((nodes.length + index) / maxColumns); // Determine the row (based on columns)
-      const column = (nodes.length + index) % maxColumns; // Determine the column in the row
+    const newNodes = chords.map((chord, index) => {
+      const row = Math.floor((nodes.length + index) / maxColumns);
+      const column = (nodes.length + index) % maxColumns;
 
       return {
         id: `${highestNodeId + index + 1}`,
-        type: 'textUpdater', // or any other custom node type
+        type: 'textUpdater',
         position: {
-          x: column * nodeWidth, // Spaced horizontally
-          y: row * nodeHeight, // Spaced vertically
+          x: column * nodeWidth,
+          y: row * nodeHeight,
         },
         data: { chordSequence: [chord] },
         style: { backgroundColor: "#ffffff", color: "white", borderColor: "white" }
       };
     });
 
-    // Update the nodes state with fetched chords
     setNodes((prevNodes) => [...prevNodes, ...newNodes]);
   };
 
-  // Handle text input change
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event) => {
     setInputValue(event.target.value);
   };
 
-  // Handle submit button click to create nodes from input
   const handleSubmit = () => {
     const chordList = inputValue.split(',').map(chord => chord.trim()).filter(chord => chord.length > 0);
-    console.log('Chord List:', chordList);
-
+    
     // Validate chords
-    chordList.forEach(chord => {
-      if (!chordMap[chord]) {
-        console.error(`Invalid chord input: ${chord}. Please check the chord symbol.`);
-      }
-    });
-
-    // Filter out any invalid chords
     const validChords = chordList.filter(chord => chordMap[chord]);
-
-    // Calculate the next available position for the new nodes
+    
     const highestNodeId = Math.max(...nodes.map(node => parseInt(node.id, 10)), 0);
     const newNodes = validChords.map((chord, index) => {
       const row = Math.floor((nodes.length + index) / maxColumns);
@@ -165,29 +163,29 @@ export default function App() {
 
   return (
     <>
-      <div style={styles.inputContainer}>
+      <div className="flex items-center mb-5">
         <input 
           type="text" 
           value={inputValue} 
           onChange={handleInputChange} 
-          placeholder="Enter chords separated by commas (e.g., Cmaj7, Dm7, G7)" 
-          style={styles.inputBox} 
+          placeholder="Enter chords separated by commas (e.g., Am, C, G)" 
+          className="w-96 px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-blue-500"
         />
         <button 
           onClick={handleSubmit} 
-          style={styles.submitButton}
+          className="ml-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
         >
           Submit
         </button>
         <button 
           onClick={fetchChords} 
-          style={styles.submitButton}
+          className="ml-4 px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
         >
-          Fetch Chords
+          Generate
         </button>
       </div>
 
-      <ReactFlow<CustomNodeType, CustomEdgeType>
+      <ReactFlow
         nodes={nodes}
         nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
@@ -201,16 +199,13 @@ export default function App() {
         selectionMode={SelectionMode.Partial}
         fitView
       >
-        <div className="mt-4 p-4 bg-gray-100 rounded-md">
-          
-        </div>
       </ReactFlow>
     </>
   );
 }
 
 // Utility function to play chords
-export const playChords = async (selectedNodes: Node[], audioContextRef: React.RefObject<AudioContext | null>) => {
+const playChords = async (selectedNodes, audioContextRef) => {
   if (!audioContextRef.current || audioContextRef.current.state === 'closed') {
     console.error('AudioContext is closed. Cannot play sound.');
     return;
@@ -234,36 +229,8 @@ export const playChords = async (selectedNodes: Node[], audioContextRef: React.R
 
     if (notes.length > 0) {
       console.log(`Playing chord: ${chordSequence}, Notes: ${notes}`);
-      
       instrument.schedule(currentTime, notes.map(note => ({ note, duration: 2 })));
       currentTime += 2;
     }
-  }
-};
-
-const styles = {
-  inputContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '20px',
-  },
-  inputBox: {
-    width: '300px',
-    padding: '10px',
-    borderRadius: '5px',
-    border: '1px solid #ccc',
-    fontSize: '16px',
-    outline: 'none',
-    transition: 'border-color 0.3s ease',
-  },
-  submitButton: {
-    padding: '10px 20px',
-    backgroundColor: '#4CAF50',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    marginLeft: '10px',
-    transition: 'background-color 0.3s ease',
   }
 };

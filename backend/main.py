@@ -17,7 +17,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Allow only this origin
+    allow_origins=["http://localhost:3001"],  # Allow only this origin
     allow_credentials=True,
     allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
     allow_headers=["*"],  # Allow all headers
@@ -75,7 +75,7 @@ def run_chord_progression_32(sequence):
     # Define tasks
     print("def tasks")
     generateBSection = tasks.generateBSection(harmonyBSection, sequence)
-    review_b_task = tasks.review_b_task(reviewer)
+    review_b_task = tasks.review_b_task(reviewBSection)
 
     # Initialize and execute the crew
     crew = Crew(
@@ -159,7 +159,7 @@ def generate_b_section(sequence: str):
         bsection = result.bsection if hasattr(result, 'bsection') else "No B-section found"
         print(bsection)
         result = result["bsection"]
-        return {str(result)}
+        return {"bsection": result}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating B section: {str(e)}")
