@@ -5,6 +5,16 @@ from agents import CustomAgents
 from tasks import CustomTasks
 import gradio as gr  # Import Gradio
 
+
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+import uvicorn
+
+app = FastAPI()
+
+class BSectionRequest(BaseModel):
+    sequence: str
+
 # Load environment variables
 os.environ["OPENAI_API_KEY"] = config("OPENAI_API_KEY")
 os.environ["GROQ_API_KEY"] = config("GROQ_API_KEY")
@@ -125,7 +135,24 @@ chord32gen = gr.Interface(
     ],
 )
 
+@app.get("/generate-b-section")
+def generate_b_section(sequence: str):
+    try:
+        result = run_chord_progression_32(sequence)
+
+        # Access the B-section from the result directly
+        bsection = result.bsection if hasattr(result, 'bsection') else "No B-section found"
+
+        return {result}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating B section: {str(e)}")
+
+
 # Combine Tabs into a Tabbed Interface
+# if __name__ == "__main__":
+#     demo = gr.TabbedInterface([chord32gen, chordMixer], ["B Section Generator", "Chords Generator"])
+#     demo.launch()
+
 if __name__ == "__main__":
-    demo = gr.TabbedInterface([chord32gen, chordMixer], ["B Section Generator", "Chords Generator"])
-    demo.launch()
+    uvicorn.run(app, host="0.0.0.0", port=8000)

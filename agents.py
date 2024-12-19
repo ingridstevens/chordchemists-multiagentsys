@@ -132,6 +132,6 @@ class CustomAgents:
             tools=[self.tools.txt_search_instance()],  # Reviewer can also use TXTSearchTool
             allow_delegation=False,
             verbose=True,
-            llm = self.llm,
+            llm = self.openai,
             max_iter = 1,
         )
