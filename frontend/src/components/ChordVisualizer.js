@@ -3,13 +3,7 @@ import Vex from 'vexflow';
 import * as Soundfont from 'soundfont-player';
 import './ChordVisualizer.css';
 import { chordMap } from '../constants/constants';
-const { Renderer, Stave, StaveNote, Formatter, Annotation } = Vex.Flow;
 
-/**
- * ChordVisualizer Component
- * Visualizes a chord sequence using VexFlow and adds audio playback with Soundfont.
- * @param {Array<string>} chordSequence - Array of chord names (e.g., ['Cmaj7', 'Dm7', 'G7']).
- */
 const ChordVisualizer = ({ chordSequence }) => {
   const containerRef = useRef(null);
   const audioContextRef = useRef(null);
@@ -20,35 +14,51 @@ const ChordVisualizer = ({ chordSequence }) => {
     // Clear previous render
     containerRef.current.innerHTML = '';
 
-    // Create VexFlow Renderer
-    const renderer = new Renderer(containerRef.current, Renderer.Backends.SVG);
-    renderer.resize(110, 150);
+    const VF = Vex.Flow;
+    
+    // Increase the size of the renderer
+    const renderer = new VF.Renderer(containerRef.current, VF.Renderer.Backends.SVG);
+    renderer.resize(200, 200); // Increased width and height
+
     const context = renderer.getContext();
 
-    // Create Stave
-    const stave = new Stave(10, 30, 80);
+    // Adjust stave position and width
+    const stave = new VF.Stave(10, 40, 180); // Increased width and adjusted y position
+    stave.addClef("treble");
     stave.setContext(context).draw();
 
     // Create notes for the chord sequence
     const notes = chordSequence.map((chord) => {
-      const keys = (chordMap[chord] || []).map(note => `${note.replace(/(\d)/, '/$1')}`); // Convert to VexFlow format
-      
-      const staveNote = new StaveNote({
-        keys,
-        duration: 'h', // Half note
+      const keys = (chordMap[chord] || []).map(note => {
+        return note.toLowerCase().replace(/(\d)/, '/$1');
       });
 
-      // Add chord name as text above the note
-      const annotation = new Annotation(chord)
-        .setFont('Arial', 24, '')
-        .setVerticalJustification(Annotation.VerticalJustify.TOP);
-
-      staveNote.addModifier(annotation, 0); // Attach annotation to the first notehead
-      return staveNote;
+      return new VF.StaveNote({ 
+        keys, 
+        duration: "w",
+      });
     });
 
-    // Format and draw notes
-    Formatter.FormatAndDraw(context, stave, notes);
+    // Create a voice and add the notes
+    const voice = new VF.Voice().addTickables(notes);
+
+    // Apply accidentals
+    VF.Accidental.applyAccidentals([voice], 'C');
+
+    // Add chord names as annotations
+    notes.forEach((note, i) => {
+      const annotation = new VF.Annotation(chordSequence[i])
+        .setFont('Arial', 12, '')
+        .setVerticalJustification(VF.Annotation.VerticalJustify.TOP);
+      note.addModifier(annotation, 0);
+    });
+
+    // Format and draw with more space
+    const formatter = new VF.Formatter()
+      .joinVoices([voice])
+      .format([voice], 160); // Increased formatting width
+
+    voice.draw(context, stave);
   }, [chordSequence]);
 
   const playChord = async (chord) => {
@@ -62,12 +72,22 @@ const ChordVisualizer = ({ chordSequence }) => {
     const audioContext = audioContextRef.current;
     const instrument = await Soundfont.instrument(audioContext, 'acoustic_grand_piano');
 
-    instrument.schedule(audioContext.currentTime, notes.map(note => ({ note, duration: 2 }))); // Play the chord for a duration of 2 seconds
+    instrument.schedule(audioContext.currentTime, notes.map(note => ({ note, duration: 2 })));
   };
 
   return (
     <div>
-      <div ref={containerRef}></div>
+      {chordSequence.map((chord, index) => (
+          <div
+            key={index}
+            onClick={() => playChord(chord)}
+            className="chord-name"
+            ref={containerRef}
+          >
+
+          </div>
+        ))}
+    
       
     </div>
   );

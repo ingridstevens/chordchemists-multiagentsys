@@ -12,7 +12,6 @@ const chordSequence = ['Cmaj7', 'Dm7', 'G7', 'Cmaj7']; // Example chords
 export default function App() {
   return (
     <>
-      <ExportButton />
       <Flow />
       
 

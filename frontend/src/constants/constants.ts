@@ -32,7 +32,7 @@ export const chordMap: { [key: string]: string[] } = {
 
   // C#
 
-  "C#": ["C#4", "F4", "G#4"],
+  "C#": ["C#4", "E4", "G#4"],
   "C#m": ["C#4", "E4", "G#4"],
   "C#sus4": ["C#4", "F#4", "G#4"],
   "C#maj7": ["C#4", "F4", "G4", "B4"],
